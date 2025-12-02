@@ -11,7 +11,7 @@ export default function DashBoardPage() {
 	const { createBoard } = useBoards();
 
 	const handleCreateBoard = async () => {
-		await createBoard();
+		await createBoard({ title: "New Board" });
 	};
 
 	return (
