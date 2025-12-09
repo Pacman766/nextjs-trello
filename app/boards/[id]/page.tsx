@@ -1,35 +1,74 @@
-"use client";
+'use client';
 
-import Navbar from "@/components/navbar";
-import { Button } from "@/components/ui/button";
+import Navbar from '@/components/navbar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { useBoard } from "@/lib/hooks/useBoards";
-import { Plus } from "lucide-react";
-import { useParams } from "next/navigation";
-import { useState } from "react";
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { useBoard } from '@/lib/hooks/useBoards';
+import { ColumnWithTasks } from '@/lib/supabase/models';
+import { Form, MoreHorizontalIcon, Plus } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useState } from 'react';
+
+function Column({
+	column,
+	children,
+	onCreateTask,
+	onEditColumn,
+}: {
+	column: ColumnWithTasks;
+	children: React.ReactNode;
+	onCreateTask: (taskData: any) => Promise<void>;
+	onEditColumn: (column: ColumnWithTasks) => void;
+}) {
+	return (
+		<div className="w-full lg:shrink-0 lg:w-80">
+			<div className="bg-white rounded-lg shadow-sm border">
+				{/* Column Header */}
+				<div className="p-3 sm:p-4 border-b">
+					<div className="flex items-center justify-between">
+						<div className="flex items-center space-x-2 min-w-0">
+							<h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+								{column.title}
+							</h3>
+							<Badge variant="secondary" className="text-xs shrink-0">
+								{column.tasks.length}
+							</Badge>
+						</div>
+						<Button variant="ghost" size="sm" className="shrink-0">
+							<MoreHorizontalIcon />
+						</Button>
+					</div>
+				</div>
+				{/* Column Content */}
+				<div className="p-2">{children}</div>
+			</div>
+		</div>
+	);
+}
 
 export default function BoardPage() {
 	const { id } = useParams<{ id: string }>();
 	const { board, updateBoard, columns } = useBoard(id);
 	const [isEditingTitle, setIsEditingTitle] = useState(false);
-	const [newTitle, setNewTitle] = useState("");
-	const [newColor, setNewColor] = useState("");
+	const [newTitle, setNewTitle] = useState('');
+	const [newColor, setNewColor] = useState('');
 	const [isFilterOpen, setIsFilterOpen] = useState(false);
 
 	async function handleUpdateBoard(e: React.FormEvent) {
@@ -43,13 +82,33 @@ export default function BoardPage() {
 		} catch (e) {}
 	}
 
+	async function createTask(){}
+
+	async function handleCreateTask(e: React.FormEvent) {
+		e.preventDefault();
+		const formData = new FormData(e.currentTarget as HTMLFormElement);
+		const taskData = {
+			title: formData.get('title') as string,
+			description: (formData.get('description') as string) || undefined,
+			assignee: (formData.get('assignee') as string) || undefined,
+			dueDate: (formData.get('dueDate') as string) || undefined,
+			priority: (formData.get('priority') as 'low' | 'medium' | 'high') || 'medium',
+		};
+
+		if(taskData.title.trim()){
+			await createTask();
+		}
+	}
+
+	
+
 	return (
 		<div className="min-h-screen bg-gray-50">
 			<Navbar
 				boardTitle={board?.title}
 				onEditBoard={() => {
-					setNewTitle(board?.title ?? "");
-					setNewColor(board?.color ?? "");
+					setNewTitle(board?.title ?? '');
+					setNewColor(board?.color ?? '');
 					setIsEditingTitle(true);
 				}}
 				onFilterClick={() => setIsFilterOpen(true)}
@@ -76,24 +135,24 @@ export default function BoardPage() {
 							<Label>Board Color</Label>
 							<div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
 								{[
-									"bg-blue-500",
-									"bg-green-500",
-									"bg-yellow-500",
-									"bg-red-500",
-									"bg-gray-500",
-									"bg-indigo-500",
-									"bg-pink-500",
-									"bg-orange-500",
-									"bg-teal-500",
-									"bg-cyan-500",
-									"bg-amber-500",
-									"bg-lime-500",
+									'bg-blue-500',
+									'bg-green-500',
+									'bg-yellow-500',
+									'bg-red-500',
+									'bg-gray-500',
+									'bg-indigo-500',
+									'bg-pink-500',
+									'bg-orange-500',
+									'bg-teal-500',
+									'bg-cyan-500',
+									'bg-amber-500',
+									'bg-lime-500',
 								].map((color) => (
 									<button
 										key={color}
 										type="button"
 										className={`w-8 h-8 rounded-full ${color} ${
-											color === newColor ? "ring-2 ring-offset-2 ring-gray-900" : ""
+											color === newColor ? 'ring-2 ring-offset-2 ring-gray-900' : ''
 										} mr-2`}
 										onClick={() => setNewColor(color)}
 									/>
@@ -119,7 +178,7 @@ export default function BoardPage() {
 						<div className="space-y-2">
 							<Label>Priority</Label>
 							<div className="flex flex-wrap gap-2">
-								{["low", "medium", "high"].map((priority, key) => (
+								{['low', 'medium', 'high'].map((priority, key) => (
 									<Button variant="outline" size="sm" key={key}>
 										{priority.charAt(0).toUpperCase() + priority.slice(1)}
 									</Button>
@@ -200,7 +259,7 @@ export default function BoardPage() {
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
-											{["low", "medium", "high"].map((priority, key) => (
+											{['low', 'medium', 'high'].map((priority, key) => (
 												<SelectItem key={key} value={priority}>
 													{priority.charAt(0).toUpperCase() + priority.slice(1)}
 												</SelectItem>
@@ -220,6 +279,19 @@ export default function BoardPage() {
 							</form>
 						</DialogContent>
 					</Dialog>
+				</div>
+
+				{/* Board Columns */}
+				<div>
+					{columns.map((col, key) => (
+						<Column key={key} column={col} onCreateTask={() => {}} onEditColumn={() => {}}>
+							<div>
+								{col.tasks.map((task, key) => (
+									<div key={key}>{task.title}</div>
+								))}
+							</div>
+						</Column>
+					))}
 				</div>
 			</main>
 		</div>

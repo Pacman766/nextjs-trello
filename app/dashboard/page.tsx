@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import Navbar from "@/components/navbar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useBoards } from "@/lib/hooks/useBoards";
-import { useUser } from "@clerk/nextjs";
-import { Filter, Grid3X3, List, Loader2, Plus, Rocket, Search, Trello } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+import Navbar from '@/components/navbar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { useBoards } from '@/lib/hooks/useBoards';
+import { useUser } from '@clerk/nextjs';
+import { Filter, Grid3X3, List, Loader2, Plus, Rocket, Search, Trello } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
 
 export default function DashBoardPage() {
 	const { user } = useUser();
 	const { createBoard, boards, loading, error } = useBoards();
-	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
 	const handleCreateBoard = async () => {
-		await createBoard({ title: "New Board" });
+		await createBoard({ title: 'New Board' });
 	};
 
 	if (loading) {
@@ -45,7 +45,7 @@ export default function DashBoardPage() {
 			<main className="container mx-auto px-4 py-6 sm:py-8">
 				<div className="mb-6 sm:mb-8">
 					<h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-						Welcome back, {user?.firstName ?? user?.emailAddresses[0].emailAddress}! 👋{" "}
+						Welcome back, {user?.firstName ?? user?.emailAddresses[0].emailAddress}! 👋{' '}
 					</h1>
 					<p className="text-gray-600">Here`s what`s happening with your board today. </p>
 					<Button className="w-full sm:w-auto" onClick={handleCreateBoard}>
@@ -128,16 +128,16 @@ export default function DashBoardPage() {
 						<div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0">
 							<div className="flex items-center space-x-2 bg-white border p-1">
 								<Button
-									variant={viewMode === "grid" ? "default" : "ghost"}
+									variant={viewMode === 'grid' ? 'default' : 'ghost'}
 									size="sm"
-									onClick={() => setViewMode("grid")}
+									onClick={() => setViewMode('grid')}
 								>
 									<Grid3X3 />
 								</Button>
 								<Button
-									variant={viewMode === "list" ? "default" : "ghost"}
+									variant={viewMode === 'list' ? 'default' : 'ghost'}
 									size="sm"
-									onClick={() => setViewMode("list")}
+									onClick={() => setViewMode('list')}
 								>
 									<List />
 								</Button>
@@ -162,10 +162,10 @@ export default function DashBoardPage() {
 					{/* Boards GridList */}
 					{boards.length === 0 ? (
 						<div>No boards yet</div>
-					) : viewMode === "grid" ? (
-						<div className="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+					) : viewMode === 'grid' ? (
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
 							{boards.map((board) => (
-								<Link key={board.id} href={`/board/${board.id}`}>
+								<Link key={board.id} href={`/boards/${board.id}`}>
 									<Card className="hover:shadow-lg transition-shadow cursor-pointer group">
 										<CardHeader className="pb-3">
 											<div className="flex items-center justify-between">
@@ -203,8 +203,8 @@ export default function DashBoardPage() {
 					) : (
 						<div>
 							{boards.map((board, key) => (
-								<div key={board.id} className={key > 0 ? "mt-4" : ""}>
-									<Link href={`/board/${board.id}`}>
+								<div key={board.id} className={key > 0 ? 'mt-4' : ''}>
+									<Link href={`/boards/${board.id}`}>
 										<Card className="hover:shadow-lg transition-shadow cursor-pointer group">
 											<CardHeader className="pb-3">
 												<div className="flex items-center justify-between">
